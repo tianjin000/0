@@ -1,0 +1,61 @@
+import random
+
+def select_word():
+    with open('words.txt')as file:
+        words= file.read()
+    return random.choice(words)
+
+
+
+def display_word(word, guessed_letters):
+    display = ''
+    for letter in word:
+        if letter in guessed_letters:
+            display += letter + ' '
+        else:
+            display += '_ '
+    return display.strip()
+
+
+def play_game():
+    word = select_word()
+    guessed_letters = []
+    remaining_guesses = 6
+    score = 0
+
+    print("Welcome to Hangman!")
+    print("Your word is: " + '_ ' * len(word))
+
+    while remaining_guesses > 0:
+        print("\nWord: " + display_word(word, guessed_letters))
+        guess = input("Guess a letter: ").upper()
+
+        if guess in guessed_letters:
+            print("You already guessed that letter.")
+        elif guess in word:
+            print(f"Good guess! {guess} is in the word.")
+            guessed_letters.append(guess)
+        else:
+            remaining_guesses -= 1
+            print(f"Sorry, {guess} is not in the word. You have {remaining_guesses} guesses left.")
+            guessed_letters.append(guess)
+
+        if all(letter in guessed_letters for letter in word):
+            print(f"Congratulations! You guessed the word: {word}")
+            score += 50
+            break
+    else:
+        print(f"Sorry, you ran out of guesses. The word was: {word}")
+        score -= 30
+
+    print(f"Your score: {score} points")
+
+    
+    play_again = input("Do you want to play again? (yes/no): ").lower()
+    if play_again == "yes":
+        play_game()
+    else:
+        print("Thanks for playing Hangman!")
+
+
+play_game()
